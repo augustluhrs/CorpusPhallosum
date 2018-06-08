@@ -9,4 +9,4 @@ python
 fadecandy
 sx1509
 i2c-tools
-
+pad4pi
