@@ -82,9 +82,9 @@ int keyRead(){
     for (int y=0; y<12; y++){
       if (GPIO.digitalRead(col[y]) == GPIO.HIGH){
         delay(10);
-        value = result[x][y];
-        dildoX = (x) * width / 12 + width / 24;
-        dildoY = (y) * height / 12 + height / 24;
+        value = result[y][x];
+        dildoX = (y) * width / 12 + width / 24;
+        dildoY = (x) * height / 12 + height / 24;
       }
     }
     GPIO.digitalWrite(row[x], GPIO.LOW);
