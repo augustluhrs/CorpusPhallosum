@@ -69,7 +69,7 @@ void setup()
   for (int x=0; x<12; x++){
     GPIO.pinMode(col[x], GPIO.INPUT);
   }
-  file = new SoundFile(this, "oh.mp3");
+  file = new SoundFile(this, "ohh.mp3");
   triOsc = new TriOsc(this);
   env = new Env(this);
 }
@@ -107,7 +107,7 @@ void draw()
        println(key_stroke);
        timer = millis();
        backSwitch = !backSwitch;
-       if (ohTime >= 50){
+       if (ohTime >= 35){
          float note = map(key_stroke, 0, 144, 0, 127);
          int noti = (int)note;
          triOsc.play(midiToFreq(noti), 0.8);
@@ -120,7 +120,7 @@ void draw()
      println(key_stroke);
      timer = millis();
      backSwitch = !backSwitch;
-     if (ohTime >= 250){
+     if (ohTime >= 50){
        file.play();
      }
    }
