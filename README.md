@@ -1,9 +1,33 @@
 Github Repo for Corpus Phallosum, a puzzling installation by August Luhrs and David Fulmer
 
+Haven't gotten a chance to write up a detailed guide on how to actually use this repo if you want to make something similar, might have to dig around, sorry! The final sketch as of 6/25/18 is august/musickeyripple.pde 
 
-*rough*
+Feel free to email me at augustluhrs(at)gmail with any questions!
 
-Installs:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+random notes for us:
+
 netatalk
 python
 fadecandy
