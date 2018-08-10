@@ -5,12 +5,7 @@ Haven't gotten a chance to write up a detailed guide on how to actually use this
 Feel free to email me at augustluhrs(at)gmail with any questions!
 
 
-
-
-
-
-
-
+Ripple animation thanks to https://learn.adafruit.com/led-art-with-fadecandy?view=all#write-a-sketch
 
 
 
