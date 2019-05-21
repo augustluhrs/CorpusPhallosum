@@ -5,7 +5,7 @@ float smoothX, smoothY;
 boolean f = false;
 
 import processing.io.*;
-
+int dildoNum = 12;
 //int[] row = {2,3,4,14,15,17,18,22,23,24,25,27};
 int[] row = {4,17,27,22,10,9,11,5,6,13,19,26};
 int[] col = {14,15,18,23,24,25,8,7,12,16,20,21};
@@ -24,7 +24,7 @@ int[][] result = {
   {121,122,123,124,125,126,127,128,129,130,131,132},
   {133,134,135,136,137,138,139,140,141,142,143,144}
 };
-int[][] dildos;
+int[][] dildos = new int[dildoNum][dildoNum];
 
 float dildoX;
 float dildoY;
@@ -138,7 +138,7 @@ int keyRead(){
         dildos[y][x] = 0;
       }
     }
-    GPIO.digitalWrite(row[x], GPIO.LOW);
+    GPIO.digitalWrite(row[y], GPIO.LOW);
   }
   return (value);
 }
