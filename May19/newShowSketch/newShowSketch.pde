@@ -122,7 +122,7 @@ void setup()
 
 void draw(){
   //overall
-  bool somethingChanged = false;
+  boolean somethingChanged = false;
   long ohTime = millis() - timer;
   int key_stroke;
 
