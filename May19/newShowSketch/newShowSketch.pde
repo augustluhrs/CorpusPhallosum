@@ -146,6 +146,8 @@ void draw(){
     for(int x = 0; x<12; x++){
       for(int y = 0; y<12; y++){
         if (dildos[y][x] == 1){
+          dildoX = (y) * width / 12 + width / 24;
+          dildoY = (x) * height / 12 + height / 24;
           somethingChanged = true;
           backSwitch = !backSwitch;
           timer = millis();
