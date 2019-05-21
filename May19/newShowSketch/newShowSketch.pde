@@ -133,6 +133,7 @@ void draw(){
       for(int y = 0; y<12; y++){
         if (dildos[y][x] == 1){
           somethingChanged = true;
+          backSwitch = !backSwitch;
           timer = millis();
           int press = result[y][x];
           float note = map(press, 0, 144, 0, 127);
@@ -146,6 +147,7 @@ void draw(){
     key_stroke = keyRead();
     if (key_stroke != 0){
       somethingChanged = true;
+      backSwitch = !backSwitch;
       println(key_stroke);
       timer = millis();
       if (ohTime >= 50){
@@ -155,7 +157,7 @@ void draw(){
   } else if (mode == 2){ //paintbrush
     println("nothing yet");
   }
-
+  /*
   //timeout background and animation
   if ((mode == 0 || mode == 1) && ohTime < 4000){
     background(0);
@@ -170,6 +172,27 @@ void draw(){
     println(dildos);
   } else if (ohTime >= 4000){
     background(a,b,c);
+  }
+  */
+  //timeout background and animation
+  long timeOut = millis() - timer;
+  if (timeOut >= 4000){
+     if (backSwitch != switchBack){
+       a = random(10, 100);
+       b = random(55, 100);
+       c = random(75, 100);
+       switchBack = backSwitch;
+     }
+     else{
+       background(a,b,c);
+     }
+  }
+  else{
+    background(0);
+    rings[int(random(rings.length))].respawn(dildoX, dildoY);
+    for (int i = 0; i < rings.length; i++) {
+      rings[i].draw();
+    }
   }
 }
 
