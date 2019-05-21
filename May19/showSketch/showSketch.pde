@@ -53,7 +53,7 @@ void setup()
   timer = millis();
 
   opc = new OPC(this, "127.0.0.1", 7890);
-  
+
   /*
   for(int j=7; j>=0; j--) {
     for(int i=0; i<8; i++) {
@@ -178,9 +178,12 @@ void draw()
   long timeOut = millis() - timer;
   if (timeOut >= 5000){
      if (backSwitch != switchBack){
+       //a = random(10, 100);
+       //b = random(10, 100);
+       //c = random(50, 100);
        a = random(10, 100);
-       b = random(10, 100);
-       c = random(50, 100);
+       b = random(55, 100);
+       c = random(75, 100);
        switchBack = backSwitch;
        musicFlip = !musicFlip;
      }
