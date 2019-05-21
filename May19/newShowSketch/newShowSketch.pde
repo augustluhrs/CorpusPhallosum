@@ -27,6 +27,7 @@ int[][] result = {
 int[][] dildos = new int[dildoNum][dildoNum];
 int[] modes = {0, 1, 2}; //midi, oh, paint (for now)
 int mode = 0;
+int[][] paintArray = new int
 
 float dildoX;
 float dildoY;
@@ -45,6 +46,9 @@ float attackTime = 0.001;
 float sustainTime = 0.004;
 float sustainLevel = 0.2;
 float releaseTime = 0.2;
+
+//webcam
+Capture cam;
 
 
 void setup()
@@ -108,6 +112,7 @@ void setup()
     rings[i] = new Ring();
   }
 
+  //gpio pin setup
   for (int x=0; x<12; x++){
     GPIO.pinMode(row[x], GPIO.OUTPUT);
     GPIO.digitalWrite(row[x], GPIO.LOW); //flipped from example b/c contact keypad, not break
@@ -115,9 +120,18 @@ void setup()
   for (int x=0; x<12; x++){
     GPIO.pinMode(col[x], GPIO.INPUT);
   }
+
+  //sound
   file = new SoundFile(this, "ohh.mp3");
   triOsc = new TriOsc(this);
   env = new Env(this);
+
+  //webcam
+  String[] cameras = Capture.list();
+  if (cameras.length != 0){
+    cam = new Capture(this, cameras[0]);
+    cam.start();
+  }
 }
 
 void draw(){
@@ -140,6 +154,8 @@ void draw(){
           int noti = (int)note;
           triOsc.play(midiToFreq(noti), 0.8);
           env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
+          //testing
+          delay(10);
         }
       }
     }
@@ -156,6 +172,12 @@ void draw(){
    }
   } else if (mode == 2){ //paintbrush
     println("nothing yet");
+  } else if (mode == 3){ // mirror
+    if (cam.available() == true){
+      cam.read();
+      timer = millis();
+    }
+    image(cam, 0, 0);
   }
   /*
   //timeout background and animation
@@ -209,6 +231,10 @@ void keyPressed(){
   if (keyCode == 50){ //2
     println("Paint Mode 2");
     mode = 2;
+  }
+  if (keyCode == 51){ //3
+    println("Mirror Mode 3");
+    mode = 3;
   }
 }
 
