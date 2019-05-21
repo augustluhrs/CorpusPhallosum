@@ -23,7 +23,8 @@ int[][] result = {
   {109,110,111,112,113,114,115,116,117,118,119,120},
   {121,122,123,124,125,126,127,128,129,130,131,132},
   {133,134,135,136,137,138,139,140,141,142,143,144}
-}; // I coulda just done result[12][12] huh...
+};
+int[][] dildos;
 
 float dildoX;
 float dildoY;
@@ -54,19 +55,12 @@ void setup()
 
   opc = new OPC(this, "127.0.0.1", 7890);
 
-  /*
-  for(int j=7; j>=0; j--) {
-    for(int i=0; i<8; i++) {
-      opc.ledStrip(i * 12, 12, width * 0.5,
-      i * height / 12.0 + height / 24.0, width / 12.0, PI, false);
+  //set up dildo state array
+  for(int x = 0; x<12; x++){
+    for(int y = 0; y<12; y++){
+      dildos[y][x] = 0;
     }
   }
-
-  for(int i=8; i<12; i++) {
-    opc.ledStrip(i * 12, 12, width * 0.5,
-    i * height / 12.0 + height / 24.0, width / 12.0, PI, false);
-  }
-  */
 
   //manual, whatever. in order from top down
   //strip 7
@@ -126,15 +120,22 @@ void setup()
 
 int keyRead(){
   int value = 0;
-  for (int x=0; x<12; x++){
-    GPIO.digitalWrite(row[x], GPIO.HIGH);
+  for (int y=0; y<12; y++){
+    GPIO.digitalWrite(row[y], GPIO.HIGH);
     delay(5);
-    for (int y=0; y<12; y++){
-      if (GPIO.digitalRead(col[y]) == GPIO.HIGH){
-        delay(10);
+    for (int x=0; x<12; x++){
+      if (GPIO.digitalRead(col[x]) == GPIO.HIGH){
+        // delay(10); //why is this here?
+        //for midi?
         value = result[y][x];
-        dildoX = (y) * width / 12 + width / 24;
-        dildoY = (x) * height / 12 + height / 24;
+        //new array stuff
+        dildos[y][x] = 1;
+        //center of ripple animation
+        dildoX = (x) * width / 12 + width / 24;
+        dildoY = (y) * height / 12 + height / 24;
+      }
+      else {
+        dildos[y][x] = 0;
       }
     }
     GPIO.digitalWrite(row[x], GPIO.LOW);
@@ -148,26 +149,34 @@ float midiToFreq(int note) {
 
 void draw()
 {
-  //background(0);
   long ohTime = millis() - timer;
   int key_stroke;
-  key_stroke = keyRead();
+  //key_stroke = keyRead();
+  keyRead();
   if (musicFlip){
-    if (key_stroke != 0){
-       println(key_stroke);
+    //if (key_stroke != 0){
+       //println(key_stroke);
        timer = millis();
        backSwitch = !backSwitch;
-       if (ohTime >= 35){
-         float note = map(key_stroke, 0, 144, 0, 127);
-         int noti = (int)note;
-         triOsc.play(midiToFreq(noti), 0.8);
-         env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
-     }
-    }
+       //if (ohTime >= 35){
+       for(int x = 0; x<12; x++){
+         for(int y = 0; y<12; y++){
+           int press = result[y][x];
+           if (press == 1){
+            float note = map(press, 0, 144, 0, 127);
+            int noti = (int)note;
+            triOsc.play(midiToFreq(noti), 0.8);
+            env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
+           }
+          }
+        }
+        //}
+    //}
   }
   else{
+    key_stroke = keyRead();
     if (key_stroke != 0){
-     println(key_stroke);
+     //println(key_stroke);
      timer = millis();
      backSwitch = !backSwitch;
      if (ohTime >= 50){
@@ -186,6 +195,7 @@ void draw()
        c = random(75, 100);
        switchBack = backSwitch;
        musicFlip = !musicFlip;
+       println(dildos);
      }
      else{
        background(a,b,c);
