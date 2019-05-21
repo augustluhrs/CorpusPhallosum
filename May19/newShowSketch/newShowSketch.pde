@@ -25,6 +25,8 @@ int[][] result = {
   {133,134,135,136,137,138,139,140,141,142,143,144}
 };
 int[][] dildos = new int[dildoNum][dildoNum];
+int[] modes = {0, 1, 2}; //midi, oh, paint (for now)
+int mode = 0;
 
 float dildoX;
 float dildoY;
@@ -118,6 +120,76 @@ void setup()
   env = new Env(this);
 }
 
+void draw(){
+  //overall
+  bool somethingChanged = false;
+  long ohTime = millis() - timer;
+  int key_stroke;
+
+  //modes
+  if (mode == 0) { // midi
+    arrayRead();
+    for(int x = 0; x<12; x++){
+      for(int y = 0; y<12; y++){
+        if (dildos[y][x] == 1){
+          somethingChanged = true;
+          timer = millis();
+          int press = result[y][x];
+          float note = map(press, 0, 144, 0, 127);
+          int noti = (int)note;
+          triOsc.play(midiToFreq(noti), 0.8);
+          env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
+        }
+      }
+    }
+  } else if (mode == 1){ //oh
+    key_stroke = keyRead();
+    if (key_stroke != 0){
+      somethingChanged = true;
+      println(key_stroke);
+      timer = millis();
+      if (ohTime >= 50){
+        file.play();
+      }
+   }
+  } else if (mode == 2){ //paintbrush
+    println("nothing yet");
+  }
+
+  //timeout background and animation
+  if ((mode == 0 || mode == 1) && ohTime < 4000){
+    background(0);
+    rings[int(random(rings.length))].respawn(dildoX, dildoY);
+    for (int i = 0; i < rings.length; i++) {
+      rings[i].draw();
+    }
+  } else if (!somethingChanged){
+    a = random(10, 100);
+    b = random(55, 100);
+    c = random(75, 100);
+    println(dildos);
+  } else if (ohTime >= 4000){
+    background(a,b,c);
+  }
+}
+
+
+void keyPressed(){
+  if (keyCode == 48){ //0
+    println("Midi Mode 0");
+    mode = 0;
+  }
+  if (keyCode == 49){ //1
+    println("Oh Mode 1");
+    mode = 1;
+  }
+  if (keyCode == 50){ //2
+    println("Paint Mode 2");
+    mode = 2;
+  }
+}
+
+
 int keyRead(){
   int value = 0;
   for (int y=0; y<12; y++){
@@ -125,14 +197,38 @@ int keyRead(){
     delay(5);
     for (int x=0; x<12; x++){
       if (GPIO.digitalRead(col[x]) == GPIO.HIGH){
-        // delay(10); //why is this here?
+        delay(10); //why is this here?
         //for midi?
         value = result[y][x];
         //new array stuff
-        dildos[y][x] = 1;
+        //dildos[y][x] = 1;
         //center of ripple animation
         dildoX = (x) * width / 12 + width / 24;
         dildoY = (y) * height / 12 + height / 24;
+      }
+      //else {
+        //dildos[y][x] = 0;
+      //}
+    }
+    GPIO.digitalWrite(row[y], GPIO.LOW);
+  }
+  return (value);
+}
+
+void arrayRead(){
+  for (int y=0; y<12; y++){
+    GPIO.digitalWrite(row[y], GPIO.HIGH);
+    delay(5); //why?
+    for (int x=0; x<12; x++){
+      if (GPIO.digitalRead(col[x]) == GPIO.HIGH){
+        delay(10); //why is this here?
+        //for midi?
+        //value = result[y][x];
+        //new array stuff
+        dildos[y][x] = 1;
+        //center of ripple animation
+        //dildoX = (x) * width / 12 + width / 24;
+        //dildoY = (y) * height / 12 + height / 24;
       }
       else {
         dildos[y][x] = 0;
@@ -140,72 +236,8 @@ int keyRead(){
     }
     GPIO.digitalWrite(row[y], GPIO.LOW);
   }
-  return (value);
 }
 
 float midiToFreq(int note) {
   return (pow(2, ((note-69)/12.0)))*440;
-}
-
-void draw()
-{
-  long ohTime = millis() - timer;
-  int key_stroke;
-  //key_stroke = keyRead();
-  keyRead();
-  if (musicFlip){
-    //if (key_stroke != 0){
-       //println(key_stroke);
-       timer = millis();
-       backSwitch = !backSwitch;
-       //if (ohTime >= 35){
-       for(int x = 0; x<12; x++){
-         for(int y = 0; y<12; y++){
-           int press = result[y][x];
-           if (press == 1){
-            float note = map(press, 0, 144, 0, 127);
-            int noti = (int)note;
-            triOsc.play(midiToFreq(noti), 0.8);
-            env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
-           }
-          }
-        }
-        //}
-    //}
-  }
-  else{
-    key_stroke = keyRead();
-    if (key_stroke != 0){
-     //println(key_stroke);
-     timer = millis();
-     backSwitch = !backSwitch;
-     if (ohTime >= 50){
-       file.play();
-     }
-   }
-  }
-  long timeOut = millis() - timer;
-  if (timeOut >= 5000){
-     if (backSwitch != switchBack){
-       //a = random(10, 100);
-       //b = random(10, 100);
-       //c = random(50, 100);
-       a = random(10, 100);
-       b = random(55, 100);
-       c = random(75, 100);
-       switchBack = backSwitch;
-       musicFlip = !musicFlip;
-       println(dildos);
-     }
-     else{
-       background(a,b,c);
-     }
-  }
-  else{
-    background(0);
-    rings[int(random(rings.length))].respawn(dildoX, dildoY);
-    for (int i = 0; i < rings.length; i++) {
-      rings[i].draw();
-    }
-  }
 }
