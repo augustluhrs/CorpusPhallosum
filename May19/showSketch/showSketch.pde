@@ -95,16 +95,16 @@ void setup()
     (7.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 8
   opc.ledStrip(96, 12, width * 0.5,
-    (8.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (11.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 9
   opc.ledStrip(108, 12, width * 0.5,
-    (9.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (10.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 10
   opc.ledStrip(120, 12, width * 0.5,
-    (10.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (9.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 11
   opc.ledStrip(132, 12, width * 0.5,
-    (11.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (8.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
 
   // We can have up to 100 rings. They all start out invisible.
   rings = new Ring[100];
@@ -156,7 +156,7 @@ void draw()
     if (key_stroke != 0){
        println(key_stroke);
        timer = millis();
-       backSwitch = !backSwitch;
+       backSwitch = false;
        if (ohTime >= 35){
          float note = map(key_stroke, 0, 144, 0, 127);
          int noti = (int)note;
@@ -169,7 +169,7 @@ void draw()
     if (key_stroke != 0){
      println(key_stroke);
      timer = millis();
-     backSwitch = !backSwitch;
+     backSwitch = false;
      if (ohTime >= 50){
        file.play();
      }
@@ -177,14 +177,14 @@ void draw()
   }
   long timeOut = millis() - timer;
   if (timeOut >= 5000){
-     if (backSwitch != switchBack){
+     if (backSwitch != true){
        //a = random(10, 100);
        //b = random(10, 100);
        //c = random(50, 100);
        a = random(10, 100);
        b = random(55, 100);
        c = random(75, 100);
-       switchBack = backSwitch;
+       backSwitch = true;
        musicFlip = !musicFlip;
      }
      else{

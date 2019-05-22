@@ -1,4 +1,3 @@
-
 OPC opc;
 PImage texture;
 Ring rings[];
@@ -49,6 +48,9 @@ float sustainLevel = 0.2;
 float releaseTime = 0.2;
 
 //webcam
+//import processing.video.*;
+import gohai.glvideo.*;
+GLCapture video;
 //Capture cam;
 
 
@@ -96,16 +98,16 @@ void setup()
     (7.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 8
   opc.ledStrip(96, 12, width * 0.5,
-    (11.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (8.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 9
   opc.ledStrip(108, 12, width * 0.5,
-    (10.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (9.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 10
   opc.ledStrip(120, 12, width * 0.5,
-    (9.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (10.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
   //strip 11
   opc.ledStrip(132, 12, width * 0.5,
-    (8.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
+    (11.0 * height) / 12.0 + (height / 24.0), width / 12.0, PI, false);
 
   // We can have up to 100 rings. They all start out invisible.
   rings = new Ring[100];
@@ -135,6 +137,16 @@ void setup()
     cam.start();
   }
   */
+  String[] devices = GLCapture.list();
+  printArray(devices);
+  
+  if (0 < devices.length) {
+    String[] configs = GLCapture.configs(devices[0]);
+    printArray(configs);
+  }
+  
+  video = new GLCapture(this);
+  video.start();
 }
 
 void draw(){
@@ -149,8 +161,6 @@ void draw(){
     for(int x = 0; x<12; x++){
       for(int y = 0; y<12; y++){
         if (dildos[y][x] == 1){
-          dildoX = (y) * width / 12 + width / 24;
-          dildoY = (x) * height / 12 + height / 24;
           somethingChanged = true;
           backSwitch = !backSwitch;
           timer = millis();
@@ -178,12 +188,17 @@ void draw(){
   } else if (mode == 2){ //paintbrush
     println("nothing yet");
   } else if (mode == 3){ // mirror
-    /*if (cam.available() == true){
+    /*
+    if (cam.available() == true){
       cam.read();
       timer = millis();
     }
     image(cam, 0, 0);
     */
+    if (video.available()){
+      video.read();
+    }
+    image(video, 0, 0, width, height);
   }
   /*
   //timeout background and animation
